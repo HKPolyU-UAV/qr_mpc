@@ -21,7 +21,7 @@ set(quadrotor_model ${PROJECT_SOURCE_DIR}/scripts/c_generated_code)
 
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES db_mpc
+#  LIBRARIES qr_mpc
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
@@ -29,7 +29,7 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
-  ${quadrotor_tailsitter_model}
+  ${quadrotor_model}
   ${acados_include}
   ${acados_include}/blasfeo/include/
   ${acados_include}/hpipm/include/
@@ -37,11 +37,11 @@ include_directories(
   ${acados_include}/qpOASES_e/
 )
 
-link_directories(${quadrotor_tailsitter_model})
+link_directories(${quadrotor_model})
 
 add_executable(qr_mpc_node src/qr_mpc_node.cpp)
 target_link_libraries(qr_mpc_node
-  ${quadrotor_tailsitter_model}/libacados_ocp_solver_quadrotor.so
+  ${quadrotor_model}/libacados_ocp_solver_quadrotor.so
   ${acados_lib}/libacados.so
   ${catkin_LIBRARIES}
 )

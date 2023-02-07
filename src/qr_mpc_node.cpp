@@ -16,7 +16,7 @@
 #include "blasfeo/include/blasfeo_d_aux.h"
 #include "blasfeo/include/blasfeo_d_aux_ext_dep.h"
 
-#include "quadrotor_tailsitter_model/quadrotor_model.h"
+#include "quadrotor_model/quadrotor_model.h"
 #include "acados_solver_quadrotor.h"
 
 class NMPC
