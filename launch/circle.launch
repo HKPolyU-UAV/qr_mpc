@@ -1,0 +1,7 @@
+<launch>
+
+    <node name="db_mpc_node" pkg="db_mpc" type="db_mpc_node" output="screen">
+        <param name="ref_traj" type = "string" value="$(find db_mpc)/traj/circle.txt" />
+    </node>
+    
+</launch>       
