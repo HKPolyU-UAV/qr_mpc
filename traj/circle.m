@@ -5,11 +5,11 @@ clc
 
 %% Parameters
 
-sample_time = 0.05;     % seconds
+sample_time = 0.025;     % seconds
 duration = 60;          % seconds
 hover_thrust = 0.7;
 r = 1.5;
-v = 5;
+v = 4;
 
 x0 = 0.5;
 y0 = 0.5;
