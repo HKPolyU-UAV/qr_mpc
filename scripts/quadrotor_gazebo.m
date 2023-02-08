@@ -9,7 +9,7 @@ nu = 3;
 %% system parameters
 
 g = 9.81;
-hover_thrust = 0.7;
+hover_thrust = 0.25;
 tau_phi = 0.1667;                               % Inner-loop controller time constants
 tau_theta = 0.1667;
 

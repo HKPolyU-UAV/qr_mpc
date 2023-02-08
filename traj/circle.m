@@ -7,9 +7,9 @@ clc
 
 sample_time = 0.05;     % seconds
 duration = 60;          % seconds
-hover_thrust = 0.7;
+hover_thrust = 0.25;
 r = 1.5;
-v = 5;
+v = 4;
 
 x0 = 0.5;
 y0 = 0.5;
