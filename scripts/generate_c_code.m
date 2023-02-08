@@ -7,8 +7,8 @@ check_acados_requirements()
 N = 40;     % prediction horizon steps
 T = 1;      % prediction horizon length (seconds)
 x0 = [0;0;0;0;0;0;0;0;];
-u_min = [0.5 -pi/2 -pi/2];
-u_max = [0.9 pi/2 pi/2];
+u_min = [0.1 -pi/3 -pi/3];
+u_max = [0.5 pi/3 pi/3];
 
 nlp_solver = 'sqp';
 qp_solver = 'partial_condensing_hpipm';

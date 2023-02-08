@@ -108,8 +108,8 @@ class NMPC
             }
 
             // ROS Subscriber & Publisher
-            local_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>("/mavros/local_position/pose", 20, &NMPC::local_pose_cb, this);
-            local_twist_sub = nh.subscribe<geometry_msgs::TwistStamped>("/mavros/local_position/velocity_local", 20, &NMPC::local_twist_cb, this);
+            local_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>("/mavros/vision_pose/pose", 20, &NMPC::local_pose_cb, this);
+            local_twist_sub = nh.subscribe<geometry_msgs::TwistStamped>("/mavros/vision_speed/twist", 20, &NMPC::local_twist_cb, this);
             setpoint_pub = nh.advertise<mavros_msgs::AttitudeTarget>("/mavros/setpoint_raw/attitude",20); 
 
             // Initialize
