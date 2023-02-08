@@ -294,7 +294,7 @@ int main(int argc, char **argv)
     std::string ref_traj;
     nh.getParam("/qr_mpc_node/ref_traj", ref_traj);
     NMPC nmpc(nh, ref_traj);
-    ros::Rate loop_rate(20);
+    ros::Rate loop_rate(40);
 
     while(ros::ok()){
         nmpc.run();

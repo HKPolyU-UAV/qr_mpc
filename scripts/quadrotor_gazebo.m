@@ -1,4 +1,4 @@
-function model = quadrotor()
+function model = quadrotor_gazebo()
 
 import casadi.*
 
@@ -9,7 +9,7 @@ nu = 3;
 %% system parameters
 
 g = 9.81;
-hover_thrust = 0.2;
+hover_thrust = 0.7;
 tau_phi = 0.1667;                               % Inner-loop controller time constants
 tau_theta = 0.1667;
 
@@ -65,7 +65,9 @@ expr_h = sym_u;
 %% cost
 
 W_x = diag([120 120 120 10 10 10 10 10]);
-W_u = diag([5000 5000 5000]);
+W_u = diag([5000 2000 2000]);
+% W_x = diag([60 60 60 10 10 10 10 10]);
+% W_u = diag([3000 300 300]);
 expr_ext_cost_e = sym_x'* W_x * sym_x;
 expr_ext_cost = expr_ext_cost_e + sym_u' * W_u * sym_u;
 % nonlinear least sqares

@@ -4,9 +4,11 @@ check_acados_requirements()
 
 %% discretization
 
-N = 20;     % prediction horizon steps
+N = 40;     % prediction horizon steps
 T = 1;      % prediction horizon length (seconds)
 x0 = [0;0;0;0;0;0;0;0;];
+u_min = [0.5 -pi/2 -pi/2];
+u_max = [0.9 pi/2 pi/2];
 
 nlp_solver = 'sqp';
 qp_solver = 'partial_condensing_hpipm';
@@ -52,8 +54,6 @@ end
 % constraints
 ocp_model.set('constr_type', 'auto');
 ocp_model.set('constr_expr_h', model.expr_h);
-u_min = [0.5 -pi/6 -pi/6];
-u_max = [0.9 pi/6 pi/6];
 ocp_model.set('constr_lh', u_min);
 ocp_model.set('constr_uh', u_max);
 
