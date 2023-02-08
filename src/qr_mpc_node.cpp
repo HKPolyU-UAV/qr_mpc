@@ -109,7 +109,9 @@ class NMPC
 
             // ROS Subscriber & Publisher
             local_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>("/mavros/vision_pose/pose", 20, &NMPC::local_pose_cb, this);
-            local_twist_sub = nh.subscribe<geometry_msgs::TwistStamped>("/mavros/vision_speed/twist", 20, &NMPC::local_twist_cb, this);
+            // local_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>("/mavros/local_position/pose", 20, &NMPC::local_pose_cb, this);
+            local_twist_sub = nh.subscribe<geometry_msgs::TwistStamped>("/mavros/vision_speed/speed_vector", 20, &NMPC::local_twist_cb, this);
+            // local_twist_sub = nh.subscribe<geometry_msgs::TwistStamped>("/mavros/local_position/velocity_local", 20, &NMPC::local_twist_cb, this);
             setpoint_pub = nh.advertise<mavros_msgs::AttitudeTarget>("/mavros/setpoint_raw/attitude",20); 
 
             // Initialize
@@ -168,7 +170,7 @@ class NMPC
         void datalogger()
         { 
             logger_time = ros::Time::now().toSec();
-            std::ofstream save("/home/rocky/experiment_data/flight_log.csv", std::ios::app);
+            std::ofstream save("/home/jeremy/experiment_data/flight_log.csv", std::ios::app);
             save<<std::setprecision(20)<<logger_time<<","<<local_pose.pose.position.x <<","<< local_pose.pose.position.y <<","<< local_pose.pose.position.z << ",";
             save<<std::setprecision(20)<< acados_in.yref[0][0] << "," << acados_in.yref[0][1] << "," << acados_in.yref[0][2] << ",";
             save<<std::setprecision(20)<< local_twist.twist.linear.x << "," << local_twist.twist.linear.y << "," << local_twist.twist.linear.z << ",";
