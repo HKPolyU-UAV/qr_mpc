@@ -165,19 +165,6 @@ class NMPC
 		    return number_of_lines;
 		}
 
-        void datalogger()
-        { 
-            logger_time = ros::Time::now().toSec();
-            std::ofstream save("/home/rocky/experiment_data/flight_log.csv", std::ios::app);
-            save<<std::setprecision(20)<<logger_time<<","<<local_pose.pose.position.x <<","<< local_pose.pose.position.y <<","<< local_pose.pose.position.z << ",";
-            save<<std::setprecision(20)<< acados_in.yref[0][0] << "," << acados_in.yref[0][1] << "," << acados_in.yref[0][2] << ",";
-            save<<std::setprecision(20)<< local_twist.twist.linear.x << "," << local_twist.twist.linear.y << "," << local_twist.twist.linear.z << ",";
-            save<<std::setprecision(20)<< local_euler.phi << "," << local_euler.theta << "," << local_euler.psi << ",";
-            save<<std::setprecision(20)<< attitude_target.thrust << "," << target_euler.phi << "," << target_euler.theta << ",";
-            save<<std::setprecision(20)<< acados_out.cpu_time << "," << acados_out.kkt_res << "," << acados_out.status << "," << std::endl;
-            save.close();
-        }
-
         void ref_cb(int line_to_read)
         {
             if (QUADROTOR_N+line_to_read+1 <= number_of_steps)  // All ref points within the file
@@ -298,7 +285,6 @@ int main(int argc, char **argv)
 
     while(ros::ok()){
         nmpc.run();
-        nmpc.datalogger();
         ros::spinOnce();
         loop_rate.sleep();
     }
