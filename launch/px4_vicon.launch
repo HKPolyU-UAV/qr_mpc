@@ -1,0 +1,48 @@
+<launch>
+
+  <arg name="vicon_server" default="192.168.10.1"/>
+
+  <node pkg="vrpn_client_ros" type="vrpn_client_node" name="vrpn_client_node" output="screen">
+    <rosparam subst_value="true">
+      server: $(arg vicon_server)
+      port: 3883
+
+      update_frequency: 100.0
+      frame_id: world
+
+      # Use the VRPN server's time, or the client's ROS time.
+      use_server_time: false
+      broadcast_tf: true
+
+      # Must either specify refresh frequency > 0.0, or a list of trackers to create
+      refresh_tracker_frequency: 1.0
+      #trackers:
+      #- FirstTracker
+      #- SecondTracker
+    </rosparam>
+    <remap from="/vrpn_client_node/gh034_control/pose" to="/mavros/vision_pose/pose" />
+    <remap from="/vrpn_client_node/gh034_control/twist" to="/mavros/vision_speed/speed_vector" />
+  </node>
+
+	<arg name="fcu_url" default="tcp://192.168.10.24:5760"/>
+	<arg name="gcs_url" default="udp://@127.0.0.1"/>
+	<arg name="tgt_system" default="1" />
+	<arg name="tgt_component" default="1" />
+	<arg name="log_output" default="screen" />
+	<arg name="fcu_protocol" default="v2.0" />
+	<arg name="respawn_mavros" default="false" />
+
+	<include file="$(find mavros)/launch/node.launch">
+		<arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
+		<arg name="config_yaml" value="$(find mavros)/launch/px4_config.yaml" />
+
+		<arg name="fcu_url" value="$(arg fcu_url)" />
+		<arg name="gcs_url" value="$(arg gcs_url)" />
+		<arg name="tgt_system" value="$(arg tgt_system)" />
+		<arg name="tgt_component" value="$(arg tgt_component)" />
+		<arg name="log_output" value="$(arg log_output)" />
+		<arg name="fcu_protocol" value="$(arg fcu_protocol)" />
+		<arg name="respawn_mavros" default="$(arg respawn_mavros)" />
+	</include>
+
+</launch>
