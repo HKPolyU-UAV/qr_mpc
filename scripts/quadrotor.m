@@ -1,4 +1,4 @@
-function model = quadrotor_gazebo()
+function model = quadrotor()
 
 import casadi.*
 

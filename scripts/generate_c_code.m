@@ -17,7 +17,7 @@ sim_method = 'erk';
 
 %% model dynamics
 
-model = quadrotor_gazebo;
+model = quadrotor;
 nx = model.nx;
 nu = model.nu;
 ny = size(model.cost_expr_y, 1);
