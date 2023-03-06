@@ -15,7 +15,7 @@ sudo apt-get install python3.7-tk
 ```
 
 Download and install the PX4 (1.11.0)
-````
+```
 git clone https://github.com/PX4/PX4-Autopilot.git
 cd PX4-Autopilot/
 git checkout 71db090
@@ -24,6 +24,13 @@ git submodule update --init --recursive
 bash ./Tools/setup/ubuntu.sh
 sudo apt upgrade libignition-math2 #(libignition-math4 for noetic)
 make px4_sitl_default gazebo
-````
-
+```
+Create a catkin workspace and clone this repository to catkin src folder (ex. ~/catkin_ws/src)
+```
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/
+catkin_make
+cd src
+git clone https://github.com/HKPolyU-UAV/qr_mpc.git
+```
 
