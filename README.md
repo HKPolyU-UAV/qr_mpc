@@ -44,7 +44,7 @@ export ACADOS_SOURCE_DIR="<acados_root>"
 ```
 Modify <acados_root> path (18th and 19th lines) in CMakeLists
 ```
-cd ~/catkin_ws/src/qr_mpc
+cd ~/catkin_ws/src/qr_mpc/
 gedit CMakeLists.txt
 ```
 Generate C code for NMPC controller
@@ -61,17 +61,17 @@ catkin_make
 ## Running
 Start PX4 SITL
 ```
-cd ~/PX4-Autopilot
+cd ~/PX4-Autopilot/
 make px4_sitl_default gazebo
 ```
 Run MAVROS
 ```
-cd ~/catkin_ws
+cd ~/catkin_ws/
 roslaunch qr_mpc PX4_gazebo.launch
 ```
 Open QGroundControl to takoff, and set flight mode to "offboard"
 
-Run NMPC controller (there are three generated trajectories in this repo: circle, lemniscate and waypoints, circle is used as example)
+Run NMPC controller (there are three preset trajectories in this repo: circle, lemniscate and waypoints, circle is used as example)
 ```
 roslaunch qr_mpc circle.launch
 ```
