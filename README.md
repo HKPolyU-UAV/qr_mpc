@@ -13,25 +13,16 @@ sudo apt install python3.7
 Python dependencies
 ```
 python3 -m pip install pip
-```
-```
 pip3 install numpy
-```
-```
 pip3 install matplotlib
-```
-```
 pip3 install scipy
-```
-```
 pip3 install future-fstrings
-```
-```
 pip3 install casadi>=3.5.1
-```
-```
 pip3 install setuptools
-```
-```
 sudo apt-get install python3.7-tk
+```
+
+ROS ([ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) with Ubuntu20.04 as example)
+```
+
 ```
