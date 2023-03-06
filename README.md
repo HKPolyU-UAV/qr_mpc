@@ -13,7 +13,6 @@ python3 -m pip install pip
 pip3 install numpy matplotlib scipy future-fstrings casadi>=3.5.1 setuptools
 sudo apt-get install python3.7-tk
 ```
-
 Download and install the PX4 (1.11.0)
 ```
 git clone https://github.com/PX4/PX4-Autopilot.git
@@ -32,5 +31,15 @@ cd ~/catkin_ws/
 catkin_make
 cd src
 git clone https://github.com/HKPolyU-UAV/qr_mpc.git
+```
+Install acados_template Python packages
+```
+pip install -e <acados_root>/interfaces/acados_template
+
+```
+Add the path to the compiled shared libraries
+```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"<acados_root>/lib"
+export ACADOS_SOURCE_DIR="<acados_root>"
 ```
 
