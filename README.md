@@ -10,13 +10,20 @@ This work implements a NMPC controller for a quadcopter with [ROS](https://www.r
 Install python dependencies
 ```
 python3 -m pip install pip
-pip3 install numpy
-pip3 install matplotlib
-pip3 install scipy
-pip3 install future-fstrings
-pip3 install casadi>=3.5.1
-pip3 install setuptools
+pip3 install numpy matplotlib scipy future-fstrings casadi>=3.5.1 setuptools
 sudo apt-get install python3.7-tk
 ```
+
+Download and install the PX4 (1.11.0)
+````
+git clone https://github.com/PX4/PX4-Autopilot.git
+cd PX4-Autopilot/
+git checkout 71db090
+git submodule sync --recursive
+git submodule update --init --recursive
+bash ./Tools/setup/ubuntu.sh
+sudo apt upgrade libignition-math2 #(libignition-math4 for noetic)
+make px4_sitl_default gazebo
+````
 
 
