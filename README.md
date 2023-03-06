@@ -37,7 +37,7 @@ Install acados_template Python packages
 pip install -e <acados_root>/interfaces/acados_template
 
 ```
-Add the path to the compiled shared libraries
+Add the path to the compiled shared libraries (Hint: you can add these lines to your ```.bashrc``` by ```sudo gedit ~/.bashrc```)
 ```
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"<acados_root>/lib"
 export ACADOS_SOURCE_DIR="<acados_root>"
