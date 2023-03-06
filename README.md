@@ -5,6 +5,7 @@ This work implements a NMPC controller for a quadcopter with [ROS](https://www.r
 * Python 3.7
 * ROS ([ROS noetic](http://wiki.ros.org/noetic/Installation/Ubuntu) recommended)
 * [QGroundControl](http://qgroundcontrol.com/)
+* [MAVROS](http://wiki.ros.org/mavros)
 * [Acados](https://docs.acados.org/installation/index.html)
 
 ## Getting started
