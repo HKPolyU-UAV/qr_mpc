@@ -67,11 +67,12 @@ make px4_sitl_default gazebo
 Run MAVROS
 ```
 cd ~/catkin_ws/
-roslaunch qr_mpc PX4_gazebo.launch
+roslaunch qr_mpc px4_gazebo.launch
 ```
-Open QGroundControl to takoff, and set flight mode to "offboard"
+Open QGroundControl to takoff
 
 Run NMPC controller (there are three preset trajectories in this repo: circle, lemniscate and waypoints, circle is used as example)
 ```
 roslaunch qr_mpc circle.launch
 ```
+Set flight mode to "offboard" in QGroundControl
