@@ -15,15 +15,15 @@ python3 -m pip install pip
 pip3 install numpy matplotlib scipy future-fstrings casadi>=3.5.1 setuptools
 sudo apt-get install python3.7-tk
 ```
-Download and install the PX4 (1.11.0)
+Install Acados
 ```
-git clone https://github.com/PX4/PX4-Autopilot.git
-cd PX4-Autopilot/
-git checkout 71db090
-git submodule sync --recursive
-git submodule update --init --recursive
-bash ./Tools/setup/ubuntu.sh
-sudo apt upgrade libignition-math2 #(libignition-math4 for noetic)
+git clone https://github.com/acados/acados.git
+cd acados
+git submodule update --recursive --init
+mkdir -p build
+cd build
+cmake -DACADOS_WITH_QPOASES=ON -DACADOS_WITH_OSQP=OFF/ON -DACADOS_INSTALL_DIR=<path_to_acados_installation_folder> ..
+make install -j4
 ```
 Create a catkin workspace and clone this repository to catkin src folder (ex. ~/catkin_ws/src)
 ```
@@ -56,6 +56,17 @@ Compile
 ```
 cd ~/catkin_ws/
 catkin_make
+```
+Download and install the PX4 (1.11.0)
+```
+cd ~
+git clone https://github.com/PX4/PX4-Autopilot.git
+cd PX4-Autopilot/
+git checkout 71db090
+git submodule sync --recursive
+git submodule update --init --recursive
+bash ./Tools/setup/ubuntu.sh
+sudo apt upgrade libignition-math2 #(libignition-math4 for noetic)
 ```
 
 ## Running
