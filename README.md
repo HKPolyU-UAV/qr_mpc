@@ -9,6 +9,12 @@ This work implements a NMPC controller for a quadcopter with [ROS](https://www.r
 * [Acados](https://docs.acados.org/installation/index.html)
 
 ## Getting started
+Install python 3.7
+```
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.7
+```
 Install python dependencies
 ```
 python3 -m pip install pip
