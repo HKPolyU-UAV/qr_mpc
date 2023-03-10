@@ -39,7 +39,7 @@ catkin_make
 cd src
 git clone https://github.com/HKPolyU-UAV/qr_mpc.git
 ```
-Install acados_template Python packages
+Install acados_template python packages
 ```
 pip install -e <acados_root>/interfaces/acados_template
 ```
