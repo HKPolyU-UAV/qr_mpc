@@ -60,10 +60,12 @@ class NMPC
         ros::Subscriber local_pose_sub;
         ros::Subscriber local_twist_sub;
         ros::Publisher setpoint_pub;
+        ros::Publisher mpc_ref_pub;
 
         // ROS message variables
         geometry_msgs::PoseStamped local_pose;
         geometry_msgs::TwistStamped local_twist;
+        geometry_msgs::PoseStamped ref_pose;
         Euler local_euler;
         Euler target_euler;
         mavros_msgs::AttitudeTarget attitude_target;
@@ -113,6 +115,7 @@ class NMPC
             // local_pose_sub = nh.subscribe<geometry_msgs::PoseStamped>("/mavros/local_position/pose", 20, &NMPC::local_pose_cb, this);
             // local_twist_sub = nh.subscribe<geometry_msgs::TwistStamped>("/mavros/local_position/velocity_local", 20, &NMPC::local_twist_cb, this);
             setpoint_pub = nh.advertise<mavros_msgs::AttitudeTarget>("/mavros/setpoint_raw/attitude",20); 
+            mpc_ref_pub = nh.advertise<geometry_msgs::PoseStamped>("/mpc_ref",20);
 
             // Initialize
             for(unsigned int i=0; i < QUADROTOR_NU; i++) acados_out.u0[i] = 0.0;
@@ -271,6 +274,11 @@ class NMPC
 
             setpoint_pub.publish(attitude_target);
 
+            ref_pose.pose.x = acados_in.yref[0][0];
+            ref_pose.pose.y = acados_in.yref[0][1];
+            ref_pose.pose.z = cados_in.yref[0][2];
+
+            mpc_ref_pub.publish(ref_pose);
 
             /*Mission information cout**********************************************/        
             if(cout_counter > 2){ //reduce cout rate

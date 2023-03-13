@@ -11,8 +11,8 @@ hover_thrust = 0.25;
 amp = 2;
 frq = 1.5;
 
-x0 = 0;
-y0 = 0;
+x0 = 0.5;
+y0 = 0.4;
 z0 = 1;
 
 %% Trajectory
