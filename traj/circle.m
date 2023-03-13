@@ -32,8 +32,8 @@ traj(:,9) = hover_thrust;
 traj(:,10) = 0;
 traj(:,11) = 0;
 
-traj = [repmat(traj(1,:),5/sample_time,1);traj];
-traj(1:5/sample_time,4:6) = 0;
+traj = [repmat(traj(1,:),15/sample_time,1);traj];
+traj(1:15/sample_time,4:6) = 0;
 traj = [traj;repmat([traj(end,1:3) 0 0 0 0 0 hover_thrust 0 0],5/sample_time,1)];
 
 %% Write to txt

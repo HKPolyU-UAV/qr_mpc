@@ -274,9 +274,9 @@ class NMPC
 
             setpoint_pub.publish(attitude_target);
 
-            ref_pose.pose.x = acados_in.yref[0][0];
-            ref_pose.pose.y = acados_in.yref[0][1];
-            ref_pose.pose.z = cados_in.yref[0][2];
+            ref_pose.pose.position.x = acados_in.yref[0][0];
+            ref_pose.pose.position.y = acados_in.yref[0][1];
+            ref_pose.pose.position.z = acados_in.yref[0][2];
 
             mpc_ref_pub.publish(ref_pose);
 
