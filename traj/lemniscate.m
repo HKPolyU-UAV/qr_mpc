@@ -9,7 +9,7 @@ sample_time = 0.025;     % seconds
 duration = 30;          % seconds
 hover_thrust = 0.25;
 amp = 2;
-frq = 2;
+frq = 1.5;
 
 x0 = 0;
 y0 = 0;

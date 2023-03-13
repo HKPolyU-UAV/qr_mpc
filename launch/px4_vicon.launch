@@ -24,7 +24,7 @@
     <remap from="/vrpn_client_node/gh034_control/twist" to="/mavros/vision_speed/speed_vector" />
   </node>
 
-	<arg name="fcu_url" default="tcp://192.168.10.24:5760"/>
+	<arg name="fcu_url" default="tcp://192.168.10.27:5760"/>
 	<arg name="gcs_url" default="udp://@127.0.0.1"/>
 	<arg name="tgt_system" default="1" />
 	<arg name="tgt_component" default="1" />
