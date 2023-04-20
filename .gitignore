@@ -1,5 +1,7 @@
 scripts/c_generated_code
 scripts/build
 scripts/acados_ocp_nlp.json
+scripts/__pycache__
+scripts/acados_ocp.json
 .vscode
 .gitignore

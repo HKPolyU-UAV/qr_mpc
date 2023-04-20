@@ -15,8 +15,8 @@ find_package(
   Eigen3 REQUIRED
 )
 
-set(acados_include "/home/yang/acados/include")
-set(acados_lib "/home/yang/acados/lib")
+set(acados_include "<acados_root>/acados/include")
+set(acados_lib "<acados_root>/acados/lib")
 set(quadrotor_model ${PROJECT_SOURCE_DIR}/scripts/c_generated_code)
 
 catkin_package(
