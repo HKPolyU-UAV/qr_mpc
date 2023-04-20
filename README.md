@@ -25,6 +25,7 @@ Install Acados
 ```
 git clone https://github.com/acados/acados.git
 cd acados
+git checkout 568e46c
 git submodule update --recursive --init
 mkdir -p build
 cd build
@@ -56,7 +57,7 @@ gedit CMakeLists.txt
 Generate C code for NMPC controller
 ```
 cd scripts
-python generate_c_code.py
+python3 generate_c_code.py
 ```
 Compile
 ```
@@ -72,7 +73,7 @@ git checkout 71db090
 git submodule sync --recursive
 git submodule update --init --recursive
 bash ./Tools/setup/ubuntu.sh
-sudo apt upgrade libignition-math2 #(libignition-math4 for noetic)
+sudo apt upgrade libignition-math4 #(libignition-math2 for melodic)
 ```
 
 ## Running
