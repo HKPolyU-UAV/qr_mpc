@@ -1,7 +1,5 @@
 from acados_template import AcadosModel
 from casadi import SX, vertcat, sin, cos
-import numpy as np
-from scipy.linalg import block_diag
 
 def export_quadrotor_model() -> AcadosModel:
 
@@ -9,9 +7,10 @@ def export_quadrotor_model() -> AcadosModel:
 
     # system parameters
     g = 9.81                        # gravity constant [m/s^2]
-    hover_thrust = 0.7
+    hover_thrust = 0.56
     tau_phi = 0.1667                # Inner-loop controller time constants
     tau_theta = 0.1667
+    tau_psi = 0.1667
 
     # states
     x = SX.sym('x')                 # earth position x
@@ -22,13 +21,15 @@ def export_quadrotor_model() -> AcadosModel:
     w = SX.sym('w')                 # earth velocity z
     phi = SX.sym('phi')             # roll angle phi
     theta = SX.sym('theta')         # pitch angle
-    sym_x = vertcat(x,y,z,u,v,w,phi,theta)
+    psi = SX.sym('psi')             # yaw angle
+    sym_x = vertcat(x,y,z,u,v,w,phi,theta,psi)
 
     # controls
     thrust = SX.sym('thrust')       # thrust command
     phi_cmd = SX.sym('phi_cmd')     # roll angle command
     theta_cmd = SX.sym('theta_cmd') # pitch angle command
-    sym_u = vertcat(thrust,phi_cmd,theta_cmd)
+    psi_cmd = SX.sym('psi_cmd')     # yaw angle command
+    sym_u = vertcat(thrust,phi_cmd,theta_cmd,psi_cmd)
 
     # xdot for f_impl
     x_dot = SX.sym('x_dot')
@@ -39,19 +40,21 @@ def export_quadrotor_model() -> AcadosModel:
     w_dot = SX.sym('w_dot')
     phi_dot = SX.sym('phi_dot')
     theta_dot = SX.sym('theta_dot')
-    sym_xdot = vertcat(x_dot,y_dot,z_dot,u_dot,v_dot,w_dot,phi_dot,theta_dot)
+    psi_dot = SX.sym('psi_dot')
+    sym_xdot = vertcat(x_dot,y_dot,z_dot,u_dot,v_dot,w_dot,phi_dot,theta_dot,psi_dot)
 
     # dynamics
     dx = u
     dy = v
     dz = w
-    du = sin(theta) * cos(phi) * thrust/hover_thrust*g
-    dv = -sin(phi) * thrust/hover_thrust*g
+    du = (cos(phi)*sin(theta)*cos(psi) + sin(phi)*sin(psi)) * thrust/hover_thrust*g
+    dv = (cos(phi)*sin(theta)*sin(psi) - sin(phi)*cos(psi)) * thrust/hover_thrust*g
     dw = -g + cos(theta) * cos(phi) * thrust/hover_thrust*g
     dphi = (phi_cmd - phi) / tau_phi
     dtheta = (theta_cmd - theta) / tau_theta
+    dpsi = (psi_cmd - psi) / tau_psi
 
-    f_expl = vertcat(dx,dy,dz,du,dv,dw,dphi,dtheta)
+    f_expl = vertcat(dx,dy,dz,du,dv,dw,dphi,dtheta,dpsi)
     f_impl = sym_xdot - f_expl
 
 

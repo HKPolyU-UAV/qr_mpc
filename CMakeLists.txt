@@ -15,8 +15,8 @@ find_package(
   Eigen3 REQUIRED
 )
 
-set(acados_include "<acados_root>/acados/include")
-set(acados_lib "<acados_root>/acados/lib")
+set(acados_include "/home/rocky/acados/include")
+set(acados_lib "/home/rocky/acados/lib")
 set(quadrotor_model ${PROJECT_SOURCE_DIR}/scripts/c_generated_code)
 
 catkin_package(
@@ -44,4 +44,12 @@ target_link_libraries(qr_mpc_node
   ${quadrotor_model}/libacados_ocp_solver_quadrotor.so
   ${acados_lib}/libacados.so
   ${catkin_LIBRARIES}
+)
+
+add_executable(px4_control_node src/px4_control_node.cpp src/quadrotor_mpc.cpp)
+target_link_libraries(px4_control_node
+  ${quadrotor_model}/libacados_ocp_solver_quadrotor.so
+  ${acados_lib}/libacados.so
+  ${catkin_LIBRARIES}
+
 )
