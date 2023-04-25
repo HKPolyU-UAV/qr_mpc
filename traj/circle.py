@@ -29,11 +29,11 @@ traj[:,4] = -v*np.cos(t*v/r)
 traj[:,5] = 0
 traj[:,6] = 0
 traj[:,7] = 0
-traj[:,8] = 1
-traj[:,9] = hover_thrust
+traj[:,8] = hover_thrust
+traj[:,9] = 0
 traj[:,10] = 0
-traj[:,11] = 0
-traj[:,12] = 0
+
+
 
 #print(np.size(traj))
 

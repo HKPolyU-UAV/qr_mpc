@@ -51,5 +51,9 @@ target_link_libraries(px4_control_node
   ${quadrotor_model}/libacados_ocp_solver_quadrotor.so
   ${acados_lib}/libacados.so
   ${catkin_LIBRARIES}
+)
 
+add_executable(system_identification src/system_identification.cpp)
+target_link_libraries(system_identification
+  ${catkin_LIBRARIES}
 )

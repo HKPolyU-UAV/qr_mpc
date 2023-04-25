@@ -131,7 +131,7 @@ void QUADROTOR_MPC::run()
     acados_in.x0[w] = local_twist.twist.linear.z;
     acados_in.x0[phi] = local_euler.phi;
     acados_in.x0[theta] = local_euler.theta;
-    acados_in.x0[psi] = local_euler.psi;
+    // acados_in.x0[psi] = local_euler.psi;
 
     ocp_nlp_constraints_model_set(mpc_capsule->nlp_config,mpc_capsule->nlp_dims,mpc_capsule->nlp_in, 0, "lbx", acados_in.x0);
     ocp_nlp_constraints_model_set(mpc_capsule->nlp_config,mpc_capsule->nlp_dims,mpc_capsule->nlp_in, 0, "ubx", acados_in.x0);
@@ -160,7 +160,8 @@ void QUADROTOR_MPC::run()
     attitude_target.thrust = acados_out.u0[0];  
     target_euler.phi = acados_out.u0[1];
     target_euler.theta = acados_out.u0[2];
-    target_euler.psi = acados_out.u0[3];
+    // target_euler.psi = acados_out.u0[3];
+    target_euler.psi = 0;
 
     geometry_msgs::Quaternion target_quaternion = tf::createQuaternionMsgFromRollPitchYaw(target_euler.phi, target_euler.theta, target_euler.psi);
 

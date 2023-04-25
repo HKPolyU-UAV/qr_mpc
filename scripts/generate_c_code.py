@@ -25,8 +25,10 @@ def main():
     ocp.dims.N = N
 
     # set cost
-    W_x = np.diag([120, 120, 120, 10, 10, 10, 10, 10, 1000])    #Q_mat
-    W_u = np.diag([5000, 2000, 2000, 100])                     #R_mat
+    # W_x = np.diag([120, 120, 120, 10, 10, 10, 10, 10, 1000])    #Q_mat
+    # W_u = np.diag([5000, 2000, 2000, 100])                     #R_mat
+    W_x = np.diag([120, 120, 120, 10, 10, 10, 10, 10])    #Q_mat
+    W_u = np.diag([5000, 2000, 2000])                     #R_mat
     W = block_diag(W_x, W_u)
     ocp.cost.W_e = W_x
     ocp.cost.W = W
@@ -42,17 +44,22 @@ def main():
     
 
     # set constraints
-    u_min = np.array([0.3, -math.pi/2, -math.pi/2, 0])
-    u_max = np.array([0.9, math.pi/2, math.pi/2, math.pi*2-0.01])
+    # u_min = np.array([0.3, -math.pi/2, -math.pi/2, 0])
+    # u_max = np.array([0.9, math.pi/2, math.pi/2, math.pi*2-0.01])
+    u_min = np.array([0.3, -math.pi/2, -math.pi/2])
+    u_max = np.array([0.9, math.pi/2, math.pi/2])
     ocp.constraints.lbu = u_min
     ocp.constraints.ubu = u_max
-    ocp.constraints.idxbu = np.array([0,0,0,0])
+    # ocp.constraints.idxbu = np.array([0,0,0,0])
+    ocp.constraints.idxbu = np.array([0,0,0])
 
-    ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    # ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
     # reference trajectory (will be overwritten later)
     x_ref = np.zeros(nx)
-    ocp.cost.yref = np.concatenate((x_ref, np.array([0.0, 0.0, 0.0, 0.0])))
+    # ocp.cost.yref = np.concatenate((x_ref, np.array([0.0, 0.0, 0.0, 0.0])))
+    ocp.cost.yref = np.concatenate((x_ref, np.array([0.0, 0.0, 0.0])))
     ocp.cost.yref_e = x_ref
 
     # set options

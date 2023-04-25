@@ -17,6 +17,10 @@ class PX4_CONTROL_FSM{
 	};
     State_FSM state;
 
+	public:
+
+	
+
 };
 
 #endif
