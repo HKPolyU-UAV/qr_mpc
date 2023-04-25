@@ -1,18 +1,21 @@
 #include <ros/ros.h>
 
-#include "quadrotor_mpc.h"
+#include "airo_px4_fsm.h"
+
+
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "px4_control_node");
+    ros::init(argc, argv, "airo_px4_node");
     ros::NodeHandle nh;
-    std::string ref_traj;
-    nh.getParam("/px4_control_node/ref_traj", ref_traj);
-    QUADROTOR_MPC mpc(nh, ref_traj);
     ros::Rate loop_rate(40);
+    
+    AIRO_PX4_FSM fsm(nh);
+
+    Eigen::VectorXd ref(11);
 
     while(ros::ok()){
-        mpc.run();
+        fsm.process();
         ros::spinOnce();
         loop_rate.sleep();
     }

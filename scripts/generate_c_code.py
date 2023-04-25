@@ -51,7 +51,7 @@ def main():
     ocp.constraints.lbu = u_min
     ocp.constraints.ubu = u_max
     # ocp.constraints.idxbu = np.array([0,0,0,0])
-    ocp.constraints.idxbu = np.array([0,0,0])
+    # ocp.constraints.idxbu = np.array([0,0,0])
 
     # ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])

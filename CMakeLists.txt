@@ -46,8 +46,8 @@ target_link_libraries(qr_mpc_node
   ${catkin_LIBRARIES}
 )
 
-add_executable(px4_control_node src/px4_control_node.cpp src/quadrotor_mpc.cpp)
-target_link_libraries(px4_control_node
+add_executable(airo_px4_node src/airo_px4_node.cpp src/airo_px4_fsm.cpp src/quadrotor_mpc.cpp)
+target_link_libraries(airo_px4_node
   ${quadrotor_model}/libacados_ocp_solver_quadrotor.so
   ${acados_lib}/libacados.so
   ${catkin_LIBRARIES}
@@ -55,5 +55,10 @@ target_link_libraries(px4_control_node
 
 add_executable(system_identification src/system_identification.cpp)
 target_link_libraries(system_identification
+  ${catkin_LIBRARIES}
+)
+
+add_executable(lala src/lala.cpp)
+target_link_libraries(lala
   ${catkin_LIBRARIES}
 )

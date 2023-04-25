@@ -17,7 +17,7 @@ y0 = 0.5
 z0 = 1
 
 # trajectory
-traj = np.zeros((int(duration/sample_time+1),13)) #x y z u v w phi theta psi thrust phi_cmd theta_cmd psi_cmd
+traj = np.zeros((int(duration/sample_time+1),11)) #x y z u v w phi theta thrust phi_cmd theta_cmd
 t = np.arange(0,duration,sample_time)
 t = np.append(t, duration)
 
@@ -32,8 +32,6 @@ traj[:,7] = 0
 traj[:,8] = hover_thrust
 traj[:,9] = 0
 traj[:,10] = 0
-
-
 
 #print(np.size(traj))
 
