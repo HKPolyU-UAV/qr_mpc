@@ -9,6 +9,8 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  std_msgs
+  message_generation
 )
 
 find_package(
@@ -24,6 +26,12 @@ catkin_package(
 #  LIBRARIES qr_mpc
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
+  CATKIN_DEPENDS message_runtime
+)
+
+add_message_files(
+  FILES
+  PositionCommand.msg
 )
 
 include_directories(
@@ -46,7 +54,13 @@ target_link_libraries(qr_mpc_node
   ${catkin_LIBRARIES}
 )
 
-add_executable(airo_px4_node src/airo_px4_node.cpp src/airo_px4_fsm.cpp src/quadrotor_mpc.cpp)
+add_executable(airo_px4_node
+  src/airo_px4_node.cpp
+  src/airo_px4_fsm.cpp
+  src/quadrotor_mpc.cpp
+  src/rc_input.cpp
+)
+
 target_link_libraries(airo_px4_node
   ${quadrotor_model}/libacados_ocp_solver_quadrotor.so
   ${acados_lib}/libacados.so

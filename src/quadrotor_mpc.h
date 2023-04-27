@@ -21,6 +21,14 @@
 #include "quadrotor_model/quadrotor_model.h"
 #include "acados_solver_quadrotor.h"
 
+struct REF{
+    Eigen::Vector3d position;
+    Eigen::Vector3d velocity;
+    Eigen::Vector3d euler;
+    double thrust;
+    Eigen::Vector2d phi_theta_cmd;
+};
+
 class QUADROTOR_MPC{
     private:
 

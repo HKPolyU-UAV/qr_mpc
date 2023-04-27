@@ -39,9 +39,6 @@ def main():
     #ocp.cost.cost_type_e = 'EXTERNAL'
     ocp.cost.cost_type = 'NONLINEAR_LS'
     ocp.cost.cost_type_e = 'NONLINEAR_LS'
-    ocp.model.cost_expr_ext_cost = model.x.T @ W_x @ model.x + model.u.T @ W_u @ model.u
-    ocp.model.cost_expr_ext_cost_e = model.x.T @ W_x @ model.x
-    
 
     # set constraints
     # u_min = np.array([0.3, -math.pi/2, -math.pi/2, 0])
@@ -50,8 +47,7 @@ def main():
     u_max = np.array([0.9, math.pi/2, math.pi/2])
     ocp.constraints.lbu = u_min
     ocp.constraints.ubu = u_max
-    # ocp.constraints.idxbu = np.array([0,0,0,0])
-    # ocp.constraints.idxbu = np.array([0,0,0])
+    ocp.constraints.idxbu = np.array([0,1,2])
 
     # ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])

@@ -2,8 +2,6 @@
 
 #include "airo_px4_fsm.h"
 
-
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "airo_px4_node");
@@ -11,8 +9,6 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(40);
     
     AIRO_PX4_FSM fsm(nh);
-
-    Eigen::VectorXd ref(11);
 
     while(ros::ok()){
         fsm.process();
