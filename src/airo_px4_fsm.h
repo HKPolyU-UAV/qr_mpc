@@ -37,6 +37,7 @@ class AIRO_PX4_FSM{
 	RC_INPUT rc_input;
 
 	// Times
+	ros::Time current_time;
 	ros::Time takeoff_time;
 	
 	// ROS Sub & Pub
@@ -54,21 +55,26 @@ class AIRO_PX4_FSM{
 	geometry_msgs::PoseStamped local_pose;
 	geometry_msgs::PoseStamped takeoff_pose;
 	geometry_msgs::TwistStamped local_twist;
+	mavros_msgs::AttitudeTarget attitude_target;
 	mavros_msgs::State current_mode;
 	mavros_msgs::State previous_mode;
 
 	//Controller
 	QUADROTOR_MPC controller;
 
+	//Ref
+	Eigen::VectorXd ref;
+
+
 	public:
 
 	AIRO_PX4_FSM(ros::NodeHandle& nh);
 	void process();
-	void fsm(const ros::Time&);
+	void fsm();
 	void publish_control_commands(mavros_msgs::AttitudeTarget,ros::Time);
 	bool toggle_offboard(bool);
 	bool toggle_arm(bool);
-	Eigen::VectorXd get_motor_speedup(const ros::Time&);
+	void get_motor_speedup();
 	void pose_cb(const geometry_msgs::PoseStamped::ConstPtr&);
 	void twist_cb(const geometry_msgs::TwistStamped::ConstPtr&);
 	void state_cb(const mavros_msgs::State::ConstPtr&);

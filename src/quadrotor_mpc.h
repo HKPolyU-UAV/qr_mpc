@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <tf/tf.h>
+#include <vector>
 #include <eigen3/Eigen/Dense>
 #include <mavros_msgs/AttitudeTarget.h>
 
@@ -20,14 +21,6 @@
 
 #include "quadrotor_model/quadrotor_model.h"
 #include "acados_solver_quadrotor.h"
-
-struct REF{
-    Eigen::Vector3d position;
-    Eigen::Vector3d velocity;
-    Eigen::Vector3d euler;
-    double thrust;
-    Eigen::Vector2d phi_theta_cmd;
-};
 
 class QUADROTOR_MPC{
     private:
@@ -89,7 +82,7 @@ class QUADROTOR_MPC{
 
     QUADROTOR_MPC();
     mavros_msgs::AttitudeTarget run(const geometry_msgs::PoseStamped& pose, const geometry_msgs::TwistStamped& twist, Eigen::VectorXd ref);
-    mavros_msgs::AttitudeTarget run(const geometry_msgs::PoseStamped& pose, const geometry_msgs::TwistStamped& twist, Eigen::MatrixXd ref);
+    mavros_msgs::AttitudeTarget run(const geometry_msgs::PoseStamped& pose, const geometry_msgs::TwistStamped& twist, std::vector<Eigen::VectorXd> ref);
 };
 
 #endif

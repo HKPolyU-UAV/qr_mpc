@@ -14,19 +14,20 @@ AIRO_PX4_FSM::AIRO_PX4_FSM(ros::NodeHandle& nh){
     // ROS Services
     setmode_srv = nh.serviceClient<mavros_msgs::SetMode>("/mavros/set_mode");
     arm_srv = nh.serviceClient<mavros_msgs::CommandBool>("/mavros/cmd/arming");
+
+    // Ref to controller
+    ref.resize(11);
+    ref<<0,0,0,0,0,0,0,0,0,0,0;
 }
 
 void AIRO_PX4_FSM::process(){
-    ros::Time current_time = ros::Time::now();
-    
-    mavros_msgs::AttitudeTarget attitude_target;
-
-    fsm(current_time);
+    current_time = ros::Time::now();
+    fsm();
     attitude_target = controller.run(local_pose,local_twist,ref);
     publish_control_commands(attitude_target,current_time);
 }
 
-void AIRO_PX4_FSM::fsm(const ros::Time& time){
+void AIRO_PX4_FSM::fsm(){
     switch (state_fsm){
         case RC_CONTROL:{
             // To AUTO_HOVER
@@ -36,7 +37,7 @@ void AIRO_PX4_FSM::fsm(const ros::Time& time){
 
             // To AUTO_TAKEOFF
             else if (rc_input.enter_offboard){
-                if (!odom_received(time)){
+                if (!odom_received(current_time)){
                     ROS_ERROR("[AIRo PX4] Reject AUTO_TAKEOFF. No odom!");
                     break;
                 }
@@ -72,9 +73,9 @@ void AIRO_PX4_FSM::fsm(const ros::Time& time){
         }
 
         case AUTO_TAKEOFF:{
-            if ((time - takeoff_time).toSec() < MOTOR_SPEEDUP_TIME) // Wait for several seconds to warn prople
+            if ((current_time - takeoff_time).toSec() < MOTOR_SPEEDUP_TIME) // Wait for several seconds to warn prople
             {
-                ref = get_motor_speedup(current_time);
+                get_motor_speedup();
             }
             // else if (odom_data.p(2) >= (takeoff_land.start_pose(2) + param.takeoff_land.height)) // reach the desired height
             // {
@@ -167,24 +168,10 @@ bool AIRO_PX4_FSM::toggle_arm(bool flag){
 	return true; 
 }
 
-Eigen::VectorXd AIRO_PX4_FSM::get_motor_speedup(const ros::Time& time){
-	double delta_t = (time - takeoff_time).toSec();
-	double ref_thrust = exp((delta_t - AutoTakeoffLand_t::MOTORS_SPEEDUP_TIME) * 6.0) * 7.0 - 7.0; // Parameters 6.0 and 7.0 are just heuristic values which result in a saticfactory curve.
-	if (des_a_z > 0.1)
-	{
-		ROS_ERROR("des_a_z > 0.1!, des_a_z=%f", des_a_z);
-		des_a_z = 0.0;
-	}
-
-	Desired_State_t des;
-	des.p = takeoff_land.start_pose.head<3>();
-	des.v = Eigen::Vector3d::Zero();
-	des.a = Eigen::Vector3d(0, 0, des_a_z);
-	des.j = Eigen::Vector3d::Zero();
-	des.yaw = takeoff_land.start_pose(3);
-	des.yaw_rate = 0.0;
-
-	return d;
+void AIRO_PX4_FSM::get_motor_speedup(){
+	double delta_t = (current_time - takeoff_time).toSec();
+	double ref_thrust = (delta_t/MOTOR_SPEEDUP_TIME)*HOVER_THRUST*0.8 + 0.005;
+	ref<<takeoff_pose.pose.position.x,takeoff_pose.pose.position.y,takeoff_pose.pose.position.z,0.0,0.0,0.0,0.0,0.0,ref_thrust,0.0,0.0;
 }
 
 void AIRO_PX4_FSM::pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg){

@@ -25,11 +25,11 @@ mavros_msgs::AttitudeTarget QUADROTOR_MPC::run(const geometry_msgs::PoseStamped&
     return solve(pose,twist);
 }
 
-mavros_msgs::AttitudeTarget QUADROTOR_MPC::run(const geometry_msgs::PoseStamped& pose, const geometry_msgs::TwistStamped& twist, Eigen::MatrixXd ref)
+mavros_msgs::AttitudeTarget QUADROTOR_MPC::run(const geometry_msgs::PoseStamped& pose, const geometry_msgs::TwistStamped& twist, std::vector<Eigen::VectorXd> ref)
 {
     for (int i = 0; i < QUADROTOR_N+1; ++i){
         for (int j = 0; j < QUADROTOR_NY; ++j){
-            acados_in.yref[i][j] = ref(i,j);
+            acados_in.yref[i][j] = ref[i][j];
         }
     }
 
