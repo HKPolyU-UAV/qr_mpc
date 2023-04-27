@@ -17,7 +17,7 @@ AIRO_PX4_FSM::AIRO_PX4_FSM(ros::NodeHandle& nh){
 
     // Ref to controller
     ref.resize(11);
-    ref<<0,0,0,0,0,0,0,0,0,0,0;
+    ref<<0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0;
 }
 
 void AIRO_PX4_FSM::process(){
@@ -73,11 +73,9 @@ void AIRO_PX4_FSM::fsm(){
         }
 
         case AUTO_TAKEOFF:{
-            if ((current_time - takeoff_time).toSec() < MOTOR_SPEEDUP_TIME) // Wait for several seconds to warn prople
-            {
-                get_motor_speedup();
-            }
-            // else if (odom_data.p(2) >= (takeoff_land.start_pose(2) + param.takeoff_land.height)) // reach the desired height
+            get_motor_speedup();// Wait for several seconds to warn prople
+            
+            // if (odom_data.p(2) >= (takeoff_land.start_pose(2) + param.takeoff_land.height)) // reach the desired height
             // {
             //     state = AUTO_HOVER;
             //     set_hov_with_odom();
@@ -169,9 +167,21 @@ bool AIRO_PX4_FSM::toggle_arm(bool flag){
 }
 
 void AIRO_PX4_FSM::get_motor_speedup(){
-	double delta_t = (current_time - takeoff_time).toSec();
-	double ref_thrust = (delta_t/MOTOR_SPEEDUP_TIME)*HOVER_THRUST*0.8 + 0.005;
-	ref<<takeoff_pose.pose.position.x,takeoff_pose.pose.position.y,takeoff_pose.pose.position.z,0.0,0.0,0.0,0.0,0.0,ref_thrust,0.0,0.0;
+    while(ros::ok() && (current_time - takeoff_time).toSec() < MOTOR_SPEEDUP_TIME){
+        double delta_t = (current_time - takeoff_time).toSec();
+	    double ref_thrust = (delta_t/MOTOR_SPEEDUP_TIME)*HOVER_THRUST*0.8 + 0.005;
+
+        attitude_target.thrust = ref_thrust;
+        attitude_target.orientation.w = takeoff_pose.pose.orientation.w;
+        attitude_target.orientation.x = takeoff_pose.pose.orientation.x;
+        attitude_target.orientation.y = takeoff_pose.pose.orientation.y;
+        attitude_target.orientation.z = takeoff_pose.pose.orientation.z;
+
+        publish_control_commands(attitude_target,current_time);
+        ros::Duration(0.05).sleep();
+        ros::spinOnce();
+        current_time = ros::Time::now();
+    }
 }
 
 void AIRO_PX4_FSM::pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg){
