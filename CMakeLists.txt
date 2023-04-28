@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(qr_mpc)
 
-## Compile as C++11, supported in ROS Kinetic and newer
+## Compile as C++17, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries

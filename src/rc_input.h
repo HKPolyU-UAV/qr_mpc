@@ -5,7 +5,7 @@ class RC_INPUT{
     public:
 
     ros::Time stamp;
-    double channel[4]; // Pitch, Roll, Yaw, and Throttle mapped from 1000~2000 to -1~1
+    double channel[4]; // Pitch, Roll, Yaw, and Thrust mapped from 1000~2000 to -1~1
     double offboard_switch; // Switch position mapped from 0~2000 to -1~1
     double last_offboard_switch;
     double command_switch; // Switch position mapped from 0~2000 to -1~1

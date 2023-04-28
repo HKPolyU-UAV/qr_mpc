@@ -6,6 +6,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
 #include <mavros_msgs/State.h>
+#include <mavros_msgs/ExtendedState.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/RCIn.h>
 #include <mavros_msgs/SetMode.h>
@@ -19,31 +20,40 @@
 class AIRO_PX4_FSM{
     private:
 
-    enum State_FSM{
-		RC_CONTROL,
+    enum STATE_FSM{
+		RC_MANUAL,
 		AUTO_HOVER,
 		AUTO_TAKEOFF,
 		AUTO_LAND,
-		POS_CONTROL
+		POS_COMMAND
 	};
 
 	// Parameters
-	static constexpr double MESSAGE_TIMEOUT = 0.5;
-	static constexpr double MOTOR_SPEEDUP_TIME = 5.0;
-	static constexpr double HOVER_THRUST = 0.56;
+	const double MESSAGE_TIMEOUT = 0.5;
+	const double MOTOR_SPEEDUP_TIME = 5.0;
+	const double HOVER_THRUST = 0.56;
+	const double TAKEOFF_HEIGHT = 1.0;
+	const double TAKEOFF_LAND_SPEED = 0.3;
+	const double HOVER_MAX_VELOCITY = 0.5;
+	const double SAFETY_VOLUMN[6] = {-2.0, 2.0, -2.0, 2.0, -100, 4.0}; // min_x max_x min_y max_y min_z max_z
 
-	//
-	State_FSM state_fsm;
+	// Variables
+	STATE_FSM state_fsm;
 	RC_INPUT rc_input;
+	bool solve_controller;
+	bool is_landed;
+	bool is_armed;
 
 	// Times
 	ros::Time current_time;
-	ros::Time takeoff_time;
+	ros::Time takeoff_land_time;
+	ros::Time last_hover_time;
 	
 	// ROS Sub & Pub
 	ros::Subscriber pose_sub;
 	ros::Subscriber twist_sub;
 	ros::Subscriber state_sub;
+	ros::Subscriber extended_state_sub;
 	ros::Subscriber rc_input_sub;
 	ros::Publisher setpoint_pub;
 
@@ -53,18 +63,18 @@ class AIRO_PX4_FSM{
 
 	// Messages
 	geometry_msgs::PoseStamped local_pose;
-	geometry_msgs::PoseStamped takeoff_pose;
+	geometry_msgs::PoseStamped takeoff_land_pose;
 	geometry_msgs::TwistStamped local_twist;
 	mavros_msgs::AttitudeTarget attitude_target;
-	mavros_msgs::State current_mode;
-	mavros_msgs::State previous_mode;
+	mavros_msgs::State current_state;
+	mavros_msgs::State previous_state;
+	mavros_msgs::ExtendedState current_extended_state;
 
 	//Controller
 	QUADROTOR_MPC controller;
 
 	//Ref
 	Eigen::VectorXd ref;
-
 
 	public:
 
@@ -75,9 +85,18 @@ class AIRO_PX4_FSM{
 	bool toggle_offboard(bool);
 	bool toggle_arm(bool);
 	void get_motor_speedup();
+	void get_takeoff_land_ref(const double);
+	void set_ref(double, double, double);
+	void set_ref_with_rc();
+	void land_detector();
+	void motor_idle_and_disarm();
+	void takeoff_land_init();
+	void auto_hover_init();
+	Eigen::Vector4d check_safety_volumn(const Eigen::Vector4d);
 	void pose_cb(const geometry_msgs::PoseStamped::ConstPtr&);
 	void twist_cb(const geometry_msgs::TwistStamped::ConstPtr&);
 	void state_cb(const mavros_msgs::State::ConstPtr&);
+	void extended_state_cb(const mavros_msgs::ExtendedState::ConstPtr&);
 	void rc_input_cb(const mavros_msgs::RCIn::ConstPtr&);
 	bool rc_received(const ros::Time&);
 	bool odom_received(const ros::Time&);

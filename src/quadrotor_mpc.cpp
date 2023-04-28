@@ -83,21 +83,21 @@ mavros_msgs::AttitudeTarget QUADROTOR_MPC::solve(const geometry_msgs::PoseStampe
     attitude_target.orientation.y = target_quaternion.y;
     attitude_target.orientation.z = target_quaternion.z;
 
-    /*Mission information cout**********************************************/        
-    if(cout_counter > 2){ //reduce cout rate
-        std::cout << "------------------------------------------------------------------------------" << std::endl;
-        std::cout << "x_ref:      " << acados_in.yref[0][0] << "\ty_ref:      " << acados_in.yref[0][1] << "\tz_ref:         " << acados_in.yref[0][2] << std::endl;
-        std::cout << "x_gt:       " << acados_in.x0[x] << "\ty_gt:       " << acados_in.x0[y] << "\tz_gt:          " << acados_in.x0[z] << std::endl;
-        std::cout << "theta_cmd:  " << target_euler.theta << "\tphi_cmd:    " << target_euler.phi <<  "\tpsi_cmd:       " << target_euler.psi << std::endl;
-        std::cout << "theta_gt:   " << local_euler.theta << "\tphi_gt:     " << local_euler.phi <<  "\tpsi_gt:        " << local_euler.psi << std::endl;
-        std::cout << "thrust_cmd: " << attitude_target.thrust << "\tsolve_time: "<< acados_out.cpu_time  << "\tacados_status: " << acados_out.status << std::endl;
-        std::cout << "ros_time:   " << std::fixed << ros::Time::now().toSec() << std::endl;
-        std::cout << "------------------------------------------------------------------------------" << std::endl;
-        cout_counter = 0;
-    }
-    else{
-        cout_counter++;
-    }
+    // /*Mission information cout**********************************************/        
+    // if(cout_counter > 2){ //reduce cout rate
+    //     std::cout << "------------------------------------------------------------------------------" << std::endl;
+    //     std::cout << "x_ref:      " << acados_in.yref[0][0] << "\ty_ref:      " << acados_in.yref[0][1] << "\tz_ref:         " << acados_in.yref[0][2] << std::endl;
+    //     std::cout << "x_gt:       " << acados_in.x0[x] << "\ty_gt:       " << acados_in.x0[y] << "\tz_gt:          " << acados_in.x0[z] << std::endl;
+    //     std::cout << "theta_cmd:  " << target_euler.theta << "\tphi_cmd:    " << target_euler.phi <<  "\tpsi_cmd:       " << target_euler.psi << std::endl;
+    //     std::cout << "theta_gt:   " << local_euler.theta << "\tphi_gt:     " << local_euler.phi <<  "\tpsi_gt:        " << local_euler.psi << std::endl;
+    //     std::cout << "thrust_cmd: " << attitude_target.thrust << "\tsolve_time: "<< acados_out.cpu_time  << "\tacados_status: " << acados_out.status << std::endl;
+    //     std::cout << "ros_time:   " << std::fixed << ros::Time::now().toSec() << std::endl;
+    //     std::cout << "------------------------------------------------------------------------------" << std::endl;
+    //     cout_counter = 0;
+    // }
+    // else{
+    //     cout_counter++;
+    // }
 
     return attitude_target;
 }
