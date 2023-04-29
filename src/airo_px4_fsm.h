@@ -8,6 +8,7 @@
 #include <mavros_msgs/State.h>
 #include <mavros_msgs/ExtendedState.h>
 #include <mavros_msgs/CommandBool.h>
+#include <mavros_msgs/CommandLong.h>
 #include <mavros_msgs/RCIn.h>
 #include <mavros_msgs/SetMode.h>
 
@@ -60,6 +61,7 @@ class AIRO_PX4_FSM{
 	// ROS Services
 	ros::ServiceClient setmode_srv;
 	ros::ServiceClient arm_srv;
+	ros::ServiceClient reboot_srv;
 
 	// Messages
 	geometry_msgs::PoseStamped local_pose;
@@ -101,6 +103,7 @@ class AIRO_PX4_FSM{
 	bool rc_received(const ros::Time&);
 	bool odom_received(const ros::Time&);
 	double twist_norm(const geometry_msgs::TwistStamped);
+	void reboot();
 };
 
 #endif

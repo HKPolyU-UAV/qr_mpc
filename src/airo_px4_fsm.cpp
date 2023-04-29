@@ -15,6 +15,7 @@ AIRO_PX4_FSM::AIRO_PX4_FSM(ros::NodeHandle& nh){
     // ROS Services
     setmode_srv = nh.serviceClient<mavros_msgs::SetMode>("/mavros/set_mode");
     arm_srv = nh.serviceClient<mavros_msgs::CommandBool>("/mavros/cmd/arming");
+    reboot_srv = nh.serviceClient<mavros_msgs::CommandLong>("/mavros/cmd/command");
 
     // Ref to controller
     ref.resize(11);
@@ -50,12 +51,14 @@ void AIRO_PX4_FSM::fsm(){
     switch (state_fsm){
         case RC_MANUAL:{
             // To AUTO_HOVER
-            if (0){
-
+            if (rc_input.enter_offboard && !is_landed){
+                auto_hover_init();
+                state_fsm = AUTO_HOVER;
+                ROS_INFO("\033[32m[AIRo PX4] RC_MANUAL ==>> AUTO_HOVER\033[32m");
             }
 
             // To AUTO_TAKEOFF
-            else if (rc_input.enter_offboard){
+            else if (rc_input.enter_offboard && is_landed){
                 if (!odom_received(current_time)){
                     ROS_ERROR("[AIRo PX4] Reject AUTO_TAKEOFF. No odom!");
                     break;
@@ -84,38 +87,56 @@ void AIRO_PX4_FSM::fsm(){
                     if(toggle_arm(true)){
                         takeoff_land_init();
                         state_fsm = AUTO_TAKEOFF;
-                        ROS_INFO("\033[32m[AIRo PX4] RC_CONTROL ==>> AUTO_TAKEOFF\033[32m");
+                        ROS_INFO("\033[32m[AIRo PX4] RC_MANUAL ==>> AUTO_TAKEOFF\033[32m");
                         break;
                     }
                 }
             }
 
             // Try to reboot
-
+            else if (rc_input.enter_reboot){
+                if (current_state.armed){
+                    ROS_ERROR("[AIRo PX4] Reject reboot! Disarm the vehicle first!");
+                    break;
+                }
+                reboot();
+            }
 
             break;
         }
 
         case AUTO_HOVER:{
+            // To RC_MANUAL
             if (!rc_input.is_offboard || !odom_received(current_time)){
                 state_fsm = RC_MANUAL;
                 toggle_offboard(false);
                 if(!rc_input.is_offboard){
-                ROS_INFO("\033[32m[AIRo PX4] AUTO_HOVER ==>> RC_CONTROL\033[32m");
+                ROS_INFO("\033[32m[AIRo PX4] AUTO_HOVER ==>> RC_MANUAL\033[32m");
                 }
                 else{
-                ROS_ERROR("[AIRo PX4] No odom! Switching to RC_CONTROL mode.");
+                ROS_ERROR("[AIRo PX4] No odom! Switching to RC_MANUAL mode.");
                 }
             }
+
+            // To AUTO_LAND
             else if (0){
                 takeoff_land_init();
                 state_fsm = AUTO_LAND;
                 ROS_INFO("\033[32m[AIRo PX4] AUTO_HOVER ==>> AUTO_LAND\033[32m");
             }
+
+            // To POS_COMMAND
+            else if (0){
+
+            }
+
+            // Disarm
             else if (is_landed){
                 motor_idle_and_disarm();
                 ROS_INFO("\033[32m[AIRo PX4] AUTO_HOVER ==>> RC_MANUAL\033[32m");
             }
+
+            // AUTO_HOVER
             else{
                 set_ref_with_rc();
             }
@@ -124,8 +145,10 @@ void AIRO_PX4_FSM::fsm(){
         }
 
         case AUTO_TAKEOFF:{
-            get_motor_speedup(); // Wait for several seconds to warn prople
+            // Wait for several seconds to warn prople
+            get_motor_speedup();
 
+            // To RC_MANUAL
             if (!rc_input.is_offboard || !odom_received(current_time)){
                 state_fsm = RC_MANUAL;
                 toggle_offboard(false);
@@ -137,11 +160,14 @@ void AIRO_PX4_FSM::fsm(){
                 }
             }
             else{
-                if (local_pose.pose.position.z > (takeoff_land_pose.pose.position.z + TAKEOFF_HEIGHT)){ // Reach the desired height
+                // Reach the desired height
+                if (local_pose.pose.position.z > (takeoff_land_pose.pose.position.z + TAKEOFF_HEIGHT)){
                     auto_hover_init();
                     state_fsm = AUTO_HOVER;
                     ROS_INFO("\033[32m[AIRo PX4] AUTO_TAKEOFF ==>> AUTO_HOVER\033[32m");
                 }
+
+                // Send takeoff reference
                 else{
                     get_takeoff_land_ref(TAKEOFF_LAND_SPEED);
                 }
@@ -151,21 +177,26 @@ void AIRO_PX4_FSM::fsm(){
         }
 
         case AUTO_LAND:{
+            // To RC_MANUAL
             if (!rc_input.is_offboard || !odom_received(current_time)){
                 state_fsm = RC_MANUAL;
                 toggle_offboard(false);
                 if(!rc_input.is_offboard){
-                ROS_INFO("\033[32m[AIRo PX4] AUTO_LAND ==>> RC_CONTROL\033[32m");
+                ROS_INFO("\033[32m[AIRo PX4] AUTO_LAND ==>> RC_MANUAL\033[32m");
                 }
                 else{
-                ROS_ERROR("[AIRo PX4] No odom! Switching to RC_CONTROL mode.");
+                ROS_ERROR("[AIRo PX4] No odom! Switching to RC_MANUAL mode.");
                 }
             }
+
+            // To AUTO_HOVER
             else if (!rc_input.is_command){
                 auto_hover_init();
                 state_fsm = AUTO_HOVER;
                 ROS_INFO("\033[32m[AIRo PX4] AUTO_LAND ==>> AUTO_HOVER\033[32m");
             }
+
+            // Send land reference
             else if (!is_landed){
                 get_takeoff_land_ref(-TAKEOFF_LAND_SPEED);
             }
@@ -195,8 +226,7 @@ void AIRO_PX4_FSM::publish_control_commands(mavros_msgs::AttitudeTarget target,r
     setpoint_pub.publish(attitude_target);
 }
 
-bool AIRO_PX4_FSM::toggle_offboard(bool flag)
-{
+bool AIRO_PX4_FSM::toggle_offboard(bool flag){
 	mavros_msgs::SetMode offboard_setmode;
     ROS_WARN("[AIRo PX4] Setting offboard mode");
 	if (flag){
@@ -293,14 +323,12 @@ void AIRO_PX4_FSM::set_ref_with_rc(){
 
 void AIRO_PX4_FSM::land_detector(){
 	static STATE_FSM last_state_fsm = STATE_FSM::RC_MANUAL;
-	if (state_fsm == STATE_FSM::AUTO_HOVER || state_fsm == STATE_FSM::AUTO_TAKEOFF)
-	{
+	if (last_state_fsm == STATE_FSM::RC_MANUAL && (state_fsm == STATE_FSM::AUTO_HOVER || state_fsm == STATE_FSM::AUTO_TAKEOFF)){
 		is_landed = false; // Always holds
 	}
 	last_state_fsm = state_fsm;
 
-	if (state_fsm == STATE_FSM::RC_MANUAL && !current_state.armed)
-	{
+	if (state_fsm == STATE_FSM::RC_MANUAL && !current_state.armed){
 		is_landed = true;
 		return; // No need of other decisions
 	}
@@ -312,26 +340,20 @@ void AIRO_PX4_FSM::land_detector(){
 
 	static ros::Time time_C12_reached;
 	static bool is_last_C12_satisfy;
-	if (is_landed)
-	{
+	if (is_landed){
 		time_C12_reached = ros::Time::now();
 		is_last_C12_satisfy = false;
 	}
-	else
-	{
+	else{
 		bool C12_satisfy = (ref(2) - local_pose.pose.position.z) < POSITION_DEVIATION && twist_norm(local_twist) < VELOCITY_THRESHOLD;
-		if (C12_satisfy && !is_last_C12_satisfy)
-		{
+		if (C12_satisfy && !is_last_C12_satisfy){
 			time_C12_reached = ros::Time::now();
 		}
-		else if (C12_satisfy && is_last_C12_satisfy)
-		{
-			if ((ros::Time::now() - time_C12_reached).toSec() > TIME_KEEP) //Constraint 3 reached
-			{
+		else if (C12_satisfy && is_last_C12_satisfy){
+			if ((ros::Time::now() - time_C12_reached).toSec() > TIME_KEEP){ //Constraint 3 reached
 				is_landed = true;
 			}
 		}
-
 		is_last_C12_satisfy = C12_satisfy;
 	}
 }
@@ -339,10 +361,8 @@ void AIRO_PX4_FSM::land_detector(){
 void AIRO_PX4_FSM::motor_idle_and_disarm(){
     double last_disarm_time = 0;
     while(ros::ok()){
-        if (current_extended_state.landed_state == mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND) // PX4 allows disarm after this
-        {
-            if (current_time.toSec() - last_disarm_time > 1.0)
-            {
+        if (current_extended_state.landed_state == mavros_msgs::ExtendedState::LANDED_STATE_ON_GROUND){ // PX4 allows disarm after this
+            if (current_time.toSec() - last_disarm_time > 1.0){
                 if (toggle_arm(false)){ // Successful disarm
                     state_fsm = RC_MANUAL;
                     toggle_offboard(false); // Toggle off offboard after disarm
@@ -440,4 +460,18 @@ bool AIRO_PX4_FSM::odom_received(const ros::Time& time){
 
 double AIRO_PX4_FSM::twist_norm(const geometry_msgs::TwistStamped twist){
     return sqrt(twist.twist.linear.x*twist.twist.linear.x + twist.twist.linear.y*twist.twist.linear.y + twist.twist.linear.z*twist.twist.linear.z);
+}
+
+void AIRO_PX4_FSM::reboot(){
+	// https://mavlink.io/en/messages/common.html, MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN(#246)
+	mavros_msgs::CommandLong reboot;
+	reboot.request.broadcast = false;
+	reboot.request.command = 246; // MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN
+	reboot.request.param1 = 1;	  // Reboot autopilot
+	reboot.request.param2 = 0;	  // Do nothing for onboard computer
+	reboot.request.confirmation = true;
+
+	reboot_srv.call(reboot);
+
+	ROS_INFO("FCU Rebooted!");
 }
