@@ -30,7 +30,7 @@ git submodule update --recursive --init
 mkdir -p build
 cd build
 cmake -DACADOS_WITH_QPOASES=ON -DACADOS_WITH_OSQP=OFF/ON -DACADOS_INSTALL_DIR=<path_to_acados_installation_folder> ..
-make install -j4
+sudo make install -j4
 ```
 Create a catkin workspace and clone this repository to catkin src folder (ex. ~/catkin_ws/src)
 ```
