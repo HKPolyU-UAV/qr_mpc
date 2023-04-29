@@ -18,7 +18,7 @@ sudo apt install python3.7
 Install python dependencies
 ```
 python3 -m pip install pip
-pip3 install numpy matplotlib scipy future-fstrings casadi>=3.5.1 setuptools
+sudo pip3 install numpy matplotlib scipy future-fstrings casadi>=3.5.1 setuptools
 sudo apt-get install python3.7-tk
 ```
 Install Acados
