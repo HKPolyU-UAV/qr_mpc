@@ -21,17 +21,20 @@ set(acados_include "/home/rocky/acados/include")
 set(acados_lib "/home/rocky/acados/lib")
 set(quadrotor_model ${PROJECT_SOURCE_DIR}/scripts/c_generated_code)
 
+add_message_files(
+  FILES
+  TakeoffLandTrigger.msg
+  AiroPx4.msg
+)
+
+generate_messages(DEPENDENCIES std_msgs)
+
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES qr_mpc
 #  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
   CATKIN_DEPENDS message_runtime
-)
-
-add_message_files(
-  FILES
-  PositionCommand.msg
 )
 
 include_directories(

@@ -7,6 +7,7 @@ RC_INPUT::RC_INPUT(){
     last_command_switch = -1;
     last_reboot_switch = -1;
 
+    // Important for no RC flight
     is_offboard = true;
     enter_offboard = false;
     is_command = true;
