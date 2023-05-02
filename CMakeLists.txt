@@ -79,3 +79,8 @@ add_executable(lala src/lala.cpp)
 target_link_libraries(lala
   ${catkin_LIBRARIES}
 )
+
+add_executable(example_mission_node src/example_mission_node.cpp)
+target_link_libraries(example_mission_node
+  ${catkin_LIBRARIES}
+)

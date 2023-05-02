@@ -109,6 +109,10 @@ void AIRO_PX4_FSM::fsm(){
                 reboot();
             }
 
+            else{
+                ROS_INFO_STREAM_THROTTLE(3.0,"[AIRo PX4] Waiting for commands in RC_MANUAL mode!");
+            }
+
             break;
         }
 
@@ -156,6 +160,14 @@ void AIRO_PX4_FSM::fsm(){
 
             // To AUTO_LAND
             else if (land_trigered(current_time) && rc_input.is_command){
+                if (command_received(current_time)){
+                    ROS_WARN("[AIRo PX4] Reject AUTO_LAND mode. Stop sending position commands and try again!");
+                    set_ref_with_rc();
+                    if (rc_input.is_command){
+                        airo_px4_state.is_waiting_for_command = true;
+                    }
+                    break;
+                }
                 takeoff_land_init();
                 state_fsm = AUTO_LAND;
                 ROS_INFO("\033[32m[AIRo PX4] AUTO_HOVER ==>> AUTO_LAND\033[32m");
@@ -235,13 +247,6 @@ void AIRO_PX4_FSM::fsm(){
                 auto_hover_init();
                 state_fsm = AUTO_HOVER;
                 ROS_INFO("\033[32m[AIRo PX4] POS_COMMAND ==>> AUTO_HOVER\033[32m");                
-            }
-
-            // To AUTO_LAND
-            else if (land_trigered(current_time) && rc_input.is_command){
-                takeoff_land_init();
-                state_fsm = AUTO_LAND;
-                ROS_INFO("\033[32m[AIRo PX4] POS_COMMAND ==>> AUTO_LAND\033[32m");                
             }
 
             // Follow command
@@ -389,6 +394,8 @@ void AIRO_PX4_FSM::set_ref_with_command(){
 
     ref_command = check_safety_volumn(ref_command);
     set_ref(ref_command(0),ref_command(1),ref_command(2));
+
+    airo_px4_state.is_waiting_for_command = true;
 }
 
 void AIRO_PX4_FSM::land_detector(){

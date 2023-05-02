@@ -43,11 +43,16 @@ def main():
     # set constraints
     # u_min = np.array([0.3, -math.pi/2, -math.pi/2, 0])
     # u_max = np.array([0.9, math.pi/2, math.pi/2, math.pi*2-0.01])
-    u_min = np.array([0.3, -math.pi/2, -math.pi/2])
-    u_max = np.array([0.9, math.pi/2, math.pi/2])
+    u_min = np.array([0, -math.pi/2, -math.pi/2])
+    u_max = np.array([1, math.pi/2, math.pi/2])
+    x_min = np.array([-math.pi/2,-math.pi/2])
+    x_max = np.array([math.pi/2,math.pi/2])
     ocp.constraints.lbu = u_min
     ocp.constraints.ubu = u_max
     ocp.constraints.idxbu = np.array([0,1,2])
+    ocp.constraints.lbx = x_min
+    ocp.constraints.ubx = x_max
+    ocp.constraints.idxbx = np.array([6,7])
 
     # ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     ocp.constraints.x0 = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])

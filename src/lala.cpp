@@ -47,30 +47,23 @@ int main(int argc, char **argv)
     while(ros::ok()){
         switch(state){
             case TAKEOFF:{
-                if(airo_px4.is_landed == true){
-                    takeoff_land_trigger.takeoff_land_trigger = true; // Takeoff
-                    takeoff_land_trigger.header.stamp = ros::Time::now();
-                    takeoff_land_pub.publish(takeoff_land_trigger);
+                    std::cout<<"takeoff"<<std::endl;
                     state = COMMAND;
-                }
                 break;
             }
 
             case COMMAND:{
-                if(airo_px4.is_waiting_for_command){
-                    target_pose.header.stamp = ros::Time::now();
-                    command_pub.publish(target_pose);
+                if(1){
+                    std::cout<<"command"<<std::endl;
+                    break;
                 }
-                if(abs(local_pose.pose.position.x - target_pose.pose.position.x) < 0.1){
+                else{
                     state = LAND;
                 }
-                break;
             }
 
             case LAND:{
-                takeoff_land_trigger.header.stamp = ros::Time::now();
-                takeoff_land_trigger.takeoff_land_trigger = false;
-                takeoff_land_pub.publish(takeoff_land_trigger);
+                std::cout<<"land"<<std::endl;
             }
         }
 
