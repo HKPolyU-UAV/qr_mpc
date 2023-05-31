@@ -1,0 +1,10 @@
+<launch>
+    <node
+        name="plotter"
+        pkg="qr_mpc"
+        type="python"
+        output="screen"
+        args="$(find qr_mpc)/scripts/plot.py"
+    />
+
+</launch>
